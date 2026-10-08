@@ -1,1 +1,330 @@
-{"updated":null,"status":[],"offers":[]}
+{
+ "updated": "2026-10-08 11:14 UTC",
+ "status": [
+  {
+   "id": "mall-of-qatar",
+   "checked_at": "2026-10-08 11:14 UTC",
+   "sources": [
+    {
+     "title": "www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+     "url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale"
+    },
+    {
+     "title": "mallofqatar.com.qa/en/events/Gear-Up-Win",
+     "url": "https://mallofqatar.com.qa/en/events/Gear-Up-Win"
+    }
+   ],
+   "notes": [
+    "no offer-shaped text found on mallofqatar.com.qa/en/events/Gear-Up-Win"
+   ]
+  },
+  {
+   "id": "city-center",
+   "checked_at": "2026-10-08 11:14 UTC",
+   "sources": [
+    {
+     "title": "citycenterdoha.com/brands-for-less/",
+     "url": "https://citycenterdoha.com/brands-for-less/"
+    }
+   ],
+   "notes": [
+    "no offer-shaped text found on citycenterdoha.com/brands-for-less/"
+   ]
+  },
+  {
+   "id": "ezdan-mall",
+   "checked_at": "2026-10-08 11:14 UTC",
+   "sources": [
+    {
+     "title": "gharrafa.ezdanmall.qa/promotions",
+     "url": "https://gharrafa.ezdanmall.qa/promotions"
+    },
+    {
+     "title": "wakra.ezdanmall.qa/promotions",
+     "url": "https://wakra.ezdanmall.qa/promotions"
+    },
+    {
+     "title": "wukair.ezdanmall.qa/promotions",
+     "url": "https://wukair.ezdanmall.qa/promotions"
+    }
+   ],
+   "notes": [
+    "no promo images matched on gharrafa.ezdanmall.qa/promotions (looking for '/uploads/' near 'Promotion')",
+    "no promo images matched on wakra.ezdanmall.qa/promotions (looking for '/uploads/' near 'Promotion')",
+    "no promo images matched on wukair.ezdanmall.qa/promotions (looking for '/uploads/' near 'Promotion')"
+   ]
+  }
+ ],
+ "offers": [
+  {
+   "id": "e9a9e47496065cc7",
+   "store_name": "American Eagle Outfitters",
+   "mall_name": "Mall of Qatar",
+   "title": "40% off everything",
+   "title_ar": null,
+   "description": "40% off everything",
+   "discount_text": "40% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "0ee02c1b6f2b4425",
+   "store_name": "Armani Exchange",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 70% off",
+   "title_ar": null,
+   "description": "Up to 70% off",
+   "discount_text": "Up to 70% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "4f48907947894b12",
+   "store_name": "Boots Pharmacy",
+   "mall_name": "Mall of Qatar",
+   "title": "25%–70% off selected items",
+   "title_ar": null,
+   "description": "25%–70% off selected items",
+   "discount_text": "25%",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "3089496c7e98607d",
+   "store_name": "Doucal's",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 70% off",
+   "title_ar": null,
+   "description": "Up to 70% off",
+   "discount_text": "Up to 70% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "447b117c18f47a36",
+   "store_name": "Fratelli Rossetti",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 70% off",
+   "title_ar": null,
+   "description": "Up to 70% off",
+   "discount_text": "Up to 70% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "640726caa733a380",
+   "store_name": "Lancel",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 50% off",
+   "title_ar": null,
+   "description": "Up to 50% off",
+   "discount_text": "Up to 50% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "49771a492063b0eb",
+   "store_name": "Mall",
+   "mall_name": "Mall of Qatar",
+   "title": "Mega Sale at Mall of Qatar | Up to 70% Off Fashion, Beauty & Lifestyle",
+   "title_ar": null,
+   "description": "Mega Sale at Mall of Qatar | Up to 70% Off Fashion, Beauty & Lifestyle",
+   "discount_text": "Up to 70% Off",
+   "category": "fashion",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "fe48a96b4652f39b",
+   "store_name": "Mall",
+   "mall_name": "Mall of Qatar",
+   "title": "Mega Sale at Mall of Qatar",
+   "title_ar": null,
+   "description": "Mega Sale at Mall of Qatar",
+   "discount_text": null,
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "81edbceb43b73d5f",
+   "store_name": "Matalan",
+   "mall_name": "Mall of Qatar",
+   "title": "Buy 1 Get 1 on selected items",
+   "title_ar": null,
+   "description": "Buy 1 Get 1 on selected items",
+   "discount_text": "Buy 1 Get 1",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "83ab4870a191327c",
+   "store_name": "Milano",
+   "mall_name": "Mall of Qatar",
+   "title": "Buy 1 Get 1 Free + Extra QR50 Off",
+   "title_ar": null,
+   "description": "Buy 1 Get 1 Free + Extra QR50 Off",
+   "discount_text": "Buy 1 Get 1 Free",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "3abdfb17078c36de",
+   "store_name": "New Balance",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 60% off",
+   "title_ar": null,
+   "description": "Up to 60% off",
+   "discount_text": "Up to 60% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "0c08892bcad4e5b8",
+   "store_name": "Pal Zileri",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 50% off",
+   "title_ar": null,
+   "description": "Up to 50% off",
+   "discount_text": "Up to 50% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "7a21cee18ff42c40",
+   "store_name": "Philipp Plein",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 80% off",
+   "title_ar": null,
+   "description": "Up to 80% off",
+   "discount_text": "Up to 80% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "9303ae1ba2ba989e",
+   "store_name": "The Body Shop",
+   "mall_name": "Mall of Qatar",
+   "title": "Special Offer – Up to 50% off",
+   "title_ar": null,
+   "description": "Special Offer – Up to 50% off",
+   "discount_text": "Up to 50% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "d525ed65b13cc433",
+   "store_name": "Tombolini",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 50% off",
+   "title_ar": null,
+   "description": "Up to 50% off",
+   "discount_text": "Up to 50% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "c9358526d4ca24ba",
+   "store_name": "Watsons",
+   "mall_name": "Mall of Qatar",
+   "title": "Buy 1 Get 1 Free at the same price on selected products · Special Offers – Great Prices on Selected Products",
+   "title_ar": null,
+   "description": "Buy 1 Get 1 Free at the same price on selected products · Special Offers – Great Prices on Selected Products",
+   "discount_text": "Buy 1 Get 1 Free",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "eb3409ca5eba12c9",
+   "store_name": "Your Favourite Brands. Unbeatable Prices",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 70% Off — 4 Days Only",
+   "title_ar": null,
+   "description": "Up to 70% Off — 4 Days Only",
+   "discount_text": "Up to 70% Off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  },
+  {
+   "id": "a02f654edf24cf5f",
+   "store_name": "Your Favourite Brands. Unbeatable Prices",
+   "mall_name": "Mall of Qatar",
+   "title": "Up to 70% off across your favorite brands — but only for 4 days. Once it’s gone, it’s gone.",
+   "title_ar": null,
+   "description": "Up to 70% off across your favorite brands — but only for 4 days. Once it’s gone, it’s gone.",
+   "discount_text": "Up to 70% off",
+   "category": "other",
+   "start_date": null,
+   "end_date": null,
+   "source_url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+   "language": "en",
+   "origin": "heuristic"
+  }
+ ]
+}
