@@ -1,10 +1,44 @@
-"""All Gemini calls live here. Functions return None on failure (retry next run), [] when nothing was found."""
+"""All Gemini calls live here. Functions return None on failure (retry next run), [] when nothing was found.
+
+Gemini is now a LAST RESORT, not the main engine (see crawler/heuristics.py, which runs first and
+needs no API key). Two env vars control how much this file is used:
+  GEMINI_MODE     "fallback" (default) = only called when the own-made extractor found nothing on a
+                  page/image that looked like it had an offer. "off" = never call Gemini at all.
+  GEMINI_CALL_CAP max text/image extraction calls per run (default 5). Grounded web search
+                  (search_offers) is separate: already capped to once/day/mall, still skipped entirely
+                  when GEMINI_MODE is "off".
+"""
 import os, re, json, time
 from google import genai
 from google.genai import types
 
 _client = None
 _picked = {}
+_calls = {"n": 0}
+
+def _mode():
+    return os.environ.get("GEMINI_MODE", "fallback").strip().lower()
+
+def _cap():
+    try:
+        return int(os.environ.get("GEMINI_CALL_CAP", "5"))
+    except ValueError:
+        return 5
+
+def enabled():
+    """Is Gemini usable at all this run (API key present and not turned off)?"""
+    return _mode() != "off" and bool(os.environ.get("GEMINI_API_KEY"))
+
+def budget_ok():
+    """Allowed to make one more text/image extraction call right now?
+    Callers should try crawler/heuristics.py FIRST and only ask this for the
+    handful of pages where it came up empty."""
+    return enabled() and _calls["n"] < _cap()
+
+def search_allowed():
+    """Grounded web search has its own once-a-day-per-mall cap in run.py; this just
+    respects the global off switch."""
+    return enabled()
 
 def client():
     global _client
@@ -74,12 +108,18 @@ def parse_array(text):
         return None
 
 def text_offers(text, mall, url, today):
+    if not budget_ok():
+        return None
+    _calls["n"] += 1
     p = (f"Today is {today}. Source: official web page of {mall} ({url}).\n"
          + RULES.replace("{today}", today) + "\n\nPAGE TEXT:\n" + text[:30000])
     r = _gen("lite", [p], types.GenerateContentConfig(response_mime_type="application/json"))
     return parse_array(_text(r)) if r else None
 
 def image_offers(data, mime, ctx, mall, branch, today):
+    if not budget_ok():
+        return None
+    _calls["n"] += 1
     p = (f"Today is {today}. This image is a promotion banner from {mall}" + (f" ({branch} branch)" if branch else "") + ". "
          f'Text shown next to it on the web page: "{ctx}". Use those dates as start and end dates unless the image shows different ones. '
          "Read the store or brand name and the offer from the image. " + RULES.replace("{today}", today))
@@ -88,6 +128,8 @@ def image_offers(data, mime, ctx, mall, branch, today):
     return parse_array(_text(r)) if r else None
 
 def search_offers(mall, area, today):
+    if not search_allowed():
+        return None
     p = (f"Today is {today}. Use Google Search to find CURRENT offers, sales and discounts at stores inside {mall}"
          + (f" ({area})" if area else "") + ", Qatar. Only include offers you found evidence for. "
          "Add to each item a source_url (the page where you saw it, or null). " + RULES.replace("{today}", today))

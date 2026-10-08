@@ -70,7 +70,8 @@ const T={
   error:"The search failed just now. Showing saved results.",none:"No offers found here yet.",
   manual:"Offers are collected automatically from official mall pages and the web. Last update:",shopsEmpty:"Shops appear here after a mall has been searched. Open a mall first.",err:"Could not load. Check your connection and try again.",
   sample:"Demo mode with sample data. Deploy the backend to search real offers.",
-  days:"days left",today:"last day",noEnd:"no end date",close:"Close",ends:"Ends",starts:"Starts",sources:"Sources",source:"Source",offers:n=>n+(n===1?" offer":" offers")},
+  days:"days left",today:"last day",noEnd:"no end date",close:"Close",ends:"Ends",starts:"Starts",sources:"Sources",source:"Source",offers:n=>n+(n===1?" offer":" offers"),
+  why:"Why nothing here?"},
  ar:{app:"عروض قطر",malls:"المجمعات",shops:"المتاجر",back:"رجوع",find:"ابحث عن متجر",
   cats:{fashion:"ملابس",food:"طعام",electronics:"إلكترونيات",beauty:"جمال",home:"منزل",grocery:"بقالة"},
   searching:"جارٍ البحث عن العروض في الويب. قد يستغرق أول بحث عن مجمع حتى 30 ثانية.",
@@ -79,7 +80,8 @@ const T={
   error:"فشل البحث الآن. نعرض النتائج المحفوظة.",none:"لا توجد عروض هنا بعد.",
   manual:"تُجمع العروض تلقائياً من صفحات المجمعات الرسمية والويب. آخر تحديث:",shopsEmpty:"تظهر المتاجر هنا بعد البحث في مجمع. افتح مجمعاً أولاً.",err:"تعذّر التحميل. تحقق من الاتصال وحاول مرة أخرى.",
   sample:"وضع تجريبي ببيانات نموذجية. انشر الخادم للبحث عن عروض حقيقية.",
-  days:"أيام متبقية",today:"آخر يوم",noEnd:"بلا تاريخ انتهاء",close:"إغلاق",ends:"ينتهي",starts:"يبدأ",sources:"المصادر",source:"المصدر",offers:n=>n+" عرض"}
+  days:"أيام متبقية",today:"آخر يوم",noEnd:"بلا تاريخ انتهاء",close:"إغلاق",ends:"ينتهي",starts:"يبدأ",sources:"المصادر",source:"المصدر",offers:n=>n+" عرض",
+  why:"لماذا لا توجد عروض هنا؟"}
 };
 let lang=localStorage.getItem("lang")||"en",route={tab:"malls"},demo=false,sample=[],seq=0,current=[],shopsAll=[];
 const $=id=>document.getElementById(id),dayMs=864e5,today=new Date(new Date().toDateString());
@@ -101,7 +103,7 @@ async function getMalls(){
 }
 async function getMall(id,cat){
   if(!demo)return api(`/api/mall/${encodeURIComponent(id)}/offers?category=${cat}`);
-  await loadSample();const m=mallsStatic.find(x=>x.id===id)||{id,name:id},st=(meta.status||[]).find(x=>x.id===id)||{};return{mall:m,status:"demo",checked_at:st.checked_at||null,sources:st.sources||[],note:m,offers:sample.filter(o=>norm(o.mall_name)===norm(m.name)&&o.category===cat)};
+  await loadSample();const m=mallsStatic.find(x=>x.id===id)||{id,name:id},st=(meta.status||[]).find(x=>x.id===id)||{};return{mall:m,status:"demo",checked_at:st.checked_at||null,sources:st.sources||[],notes:st.notes||[],note:m,offers:sample.filter(o=>norm(o.mall_name)===norm(m.name)&&o.category===cat)};
 }
 async function getShops(){
   if(!demo)return api("/api/shops");
@@ -144,13 +146,14 @@ async function go(){
       const r=await getMall(route.mall,route.cat);if(my!==seq)return;
       const bits=[];
       if(r.checked_at)bits.push(`${t.checked} ${ago(r.checked_at)}`);
-      if(r.offers.some(o=>o.origin==="ai_search"))bits.push(t.ai);
+      if(r.offers.some(o=>o.origin&&o.origin.startsWith("ai")))bits.push(t.ai);
       const msg=t[r.status];
       v.innerHTML=`${back()}<h2 class="pt">${esc(nm(r.mall))}</h2>${chips()}
        <p class="meta">${esc(bits.join(" · "))}</p>
        ${r.note&&(r.note.note||r.note.note_ar)?`<p class="meta">${esc(lang==="ar"&&r.note.note_ar?r.note.note_ar:r.note.note)}${/^https?:\/\//.test(r.note.note_url||"")?` <a href="${esc(r.note.note_url)}" target="_blank" rel="noopener">${t.source}</a>`:""}</p>`:""}${msg&&["limit","busy","error"].includes(r.status)?`<p class="meta warn">${msg}</p>`:""}
        ${r.offers.length?cards(r.offers,false):`<p class="empty">${t.none}</p>`}
-       ${r.sources&&r.sources.length?`<details><summary>${t.sources}</summary><ul>${r.sources.map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join("")}</ul></details>`:""}`;
+       ${r.sources&&r.sources.length?`<details><summary>${t.sources}</summary><ul>${r.sources.map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join("")}</ul></details>`:""}
+       ${r.notes&&r.notes.length?`<details><summary>${t.why}</summary><ul>${r.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></details>`:""}`;
     }else if(route.shop){
       const r=await getShop(route.shop);if(my!==seq)return;
       v.innerHTML=`${back()}<h2 class="pt">${esc(r.name)}</h2><p class="meta">${t.offers(r.offers.length)}</p>${cards(r.offers,true)}`;

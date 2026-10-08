@@ -1,9 +1,13 @@
-"""Crawler: official mall pages (+ optional Google-grounded search) -> Gemini -> web/offers.json"""
+"""Crawler: official mall pages (+ optional Google-grounded search) -> own extractor (+ Gemini as
+last resort) -> web/offers.json. See heuristics.py for the own-made extraction engine; ai.py is now
+only consulted when that engine finds nothing on a page/image that looked like it had an offer."""
 import os, re, json, time, hashlib, pathlib, datetime as dt
 from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 import ai
+import heuristics
+import ocr
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 UA = {"User-Agent": "Mozilla/5.0 (compatible; QatarOffersBot/1.0)"}
@@ -88,7 +92,7 @@ def normalize(o, today):
             "start_date": start, "end_date": end, "language": s300(o.get("language")),
             "source_url": url if isinstance(url, str) and re.match(r"https?://", url) else None}
 
-def add_offers(st, mall, offers, source_url, branch, today):
+def add_offers(st, mall, offers, source_url, branch, today, origin="heuristic"):
     ids = []
     for raw in offers:
         o = normalize(raw, today)
@@ -100,7 +104,7 @@ def add_offers(st, mall, offers, source_url, branch, today):
         i = hashlib.sha1(key.encode()).hexdigest()[:16]
         old = st["offers"].get(i)
         st["offers"][i] = {**o, "id": i, "mall_id": mall["id"], "mall_name": mall["name"],
-                           "source_url": o["source_url"] or source_url, "origin": "ai_search",
+                           "source_url": o["source_url"] or source_url, "origin": origin,
                            "first_seen": old["first_seen"] if old else today, "last_seen": today}
         ids.append(i)
     return ids
@@ -124,21 +128,29 @@ def main(root=ROOT):
         pages = list(mall.get("pages", []))
         if mall.get("sitemap"):
             known = {p["url"] for p in pages}
-            pages += [{"url": u, "type": "text"} for u in sitemap_urls(mall["sitemap"]) if u not in known]
-        srcs = []
+            found = sitemap_urls(mall["sitemap"])
+            pages += [{"url": u, "type": "text"} for u in found if u not in known]
+        srcs, notes = [], []
         for pg in pages:
             url = pg["url"]
             try:
                 html = fetch(url).text
             except Exception as e:
+                notes.append(f"could not open {url.split('//')[-1][:60]}: {str(e)[:80]}")
                 print("skip page", url, e); continue
             srcs.append({"title": url.split("//")[-1][:60], "url": url})
             soup = BeautifulSoup(html, "html.parser")
             if pg.get("type") == "images":
-                for img_url, ctx in find_images(soup, url, pg):
+                imgs = find_images(soup, url, pg)
+                if not imgs:
+                    notes.append(f"no promo images matched on {url.split('//')[-1][:60]}"
+                                 f" (looking for '{pg.get('image_contains', '/uploads/')}'"
+                                 + (f" near '{pg['context_must']}'" if pg.get('context_must') else "") + ")")
+                found_here = 0
+                for img_url, ctx in imgs:
                     rec = st["images"].get(img_url)
-                    if rec:                                  # already read before: no AI call
-                        touch(st, rec["offer_ids"], T); continue
+                    if rec:                                  # already read before: no re-read
+                        touch(st, rec["offer_ids"], T); found_here += len(rec["offer_ids"]); continue
                     if new_images >= MAX_NEW_IMAGES:
                         continue
                     try:
@@ -148,30 +160,51 @@ def main(root=ROOT):
                     if len(r.content) > 6_000_000:
                         continue
                     mime = (r.headers.get("content-type") or "image/jpeg").split(";")[0]
-                    offers = ai.image_offers(r.content, mime, ctx, mall["name"], pg.get("branch"), T)
-                    if offers is None:
-                        continue                              # AI failed: retry next run
-                    st["images"][img_url] = {"offer_ids": add_offers(st, mall, offers, url, pg.get("branch"), T)}
+                    text = ocr.ocr_text(r.content)
+                    offers = heuristics.extract_offers_from_image_text(text, ctx, mall["name"], pg.get("branch"), T)
+                    origin = "ocr"
+                    if not offers:
+                        ai_offers = ai.image_offers(r.content, mime, ctx, mall["name"], pg.get("branch"), T)
+                        if ai_offers is not None:
+                            offers, origin = ai_offers, "ai_image"
+                    ids = add_offers(st, mall, offers, url, pg.get("branch"), T, origin)
+                    st["images"][img_url] = {"offer_ids": ids}
+                    found_here += len(ids)
                     new_images += 1
-                    time.sleep(SLEEP)
+                    time.sleep(0.1 if origin != "ai_image" else SLEEP)
+                if imgs and not found_here:
+                    notes.append(f"{len(imgs)} promo image(s) found on {url.split('//')[-1][:60]} but no offer could be read from them")
             else:
                 text = text_of(soup)
                 h = hashlib.sha1(text.encode()).hexdigest()
                 rec = st["pages"].get(url)
-                if rec and rec["hash"] == h:                  # page unchanged: no AI call
-                    touch(st, rec["offer_ids"], T); continue
-                offers = ai.text_offers(text, mall["name"], url, T)
-                if offers is None:
+                if rec and rec["hash"] == h:                  # page unchanged: nothing new to do
+                    touch(st, rec["offer_ids"], T)
                     continue
-                st["pages"][url] = {"hash": h, "offer_ids": add_offers(st, mall, offers, url, None, T)}
-                time.sleep(SLEEP)
+                offers = heuristics.extract_offers_from_text(text, mall["name"], url, T)
+                origin = "heuristic"
+                if not offers and len(text) >= 60:
+                    ai_offers = ai.text_offers(text, mall["name"], url, T)
+                    if ai_offers is not None:
+                        offers, origin = ai_offers, "ai_text"
+                    time.sleep(SLEEP)
+                if not offers:
+                    short = url.split('//')[-1][:60]
+                    if len(text) < 60:
+                        notes.append(f"{short} returned almost no readable text "
+                                     "(page may need JavaScript to show its content)")
+                    else:
+                        notes.append(f"no offer-shaped text found on {short}")
+                st["pages"][url] = {"hash": h, "offer_ids": add_offers(st, mall, offers, url, None, T, origin)}
         if mall.get("search") and st["searched"].get(mall["id"]) != T:   # at most once a day per mall
             res = ai.search_offers(mall["name"], mall.get("area"), T)
             if res is not None:
-                add_offers(st, mall, res[0], None, None, T)
+                add_offers(st, mall, res[0], None, None, T, "ai_search")
                 srcs += res[1]
                 st["searched"][mall["id"]] = T
-        status.append({"id": mall["id"], "checked_at": now, "sources": srcs[:10]})
+            elif not ai.search_allowed():
+                notes.append("web search disabled (GEMINI_MODE=off)")
+        status.append({"id": mall["id"], "checked_at": now, "sources": srcs[:10], "notes": notes[:6]})
 
     today = dt.date.fromisoformat(T)
     for i, o in list(st["offers"].items()):
@@ -185,7 +218,8 @@ def main(root=ROOT):
     jsave(root / "web/offers.json", {"updated": now, "status": status, "offers": [{k: o.get(k) for k in pub} for o in live]})
     jsave(root / "web/malls.json", [{k: m.get(k) for k in ("id", "name", "name_ar", "area")} for m in cfg["malls"]])
     jsave(root / "data/state.json", st)
-    print(f"done: {len(live)} live offers, {new_images} new images read")
+    print(f"done: {len(live)} live offers, {new_images} new images read, "
+          f"{ai._calls['n']} Gemini extraction call(s) used (mode={ai._mode()})")
 
 if __name__ == "__main__":
     main()
