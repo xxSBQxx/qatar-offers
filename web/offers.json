@@ -1,1 +1,48 @@
-{"updated":null,"status":[],"offers":[]}
+{
+ "updated": "2026-10-08 10:27 UTC",
+ "status": [
+  {
+   "id": "mall-of-qatar",
+   "checked_at": "2026-10-08 10:27 UTC",
+   "sources": [
+    {
+     "title": "www.mallofqatar.com.qa/en/events/qatar-mega-sale",
+     "url": "https://www.mallofqatar.com.qa/en/events/qatar-mega-sale"
+    },
+    {
+     "title": "mallofqatar.com.qa/en/events/Gear-Up-Win",
+     "url": "https://mallofqatar.com.qa/en/events/Gear-Up-Win"
+    }
+   ]
+  },
+  {
+   "id": "city-center",
+   "checked_at": "2026-10-08 10:27 UTC",
+   "sources": [
+    {
+     "title": "citycenterdoha.com/brands-for-less/",
+     "url": "https://citycenterdoha.com/brands-for-less/"
+    }
+   ]
+  },
+  {
+   "id": "ezdan-mall",
+   "checked_at": "2026-10-08 10:27 UTC",
+   "sources": [
+    {
+     "title": "gharrafa.ezdanmall.qa/promotions",
+     "url": "https://gharrafa.ezdanmall.qa/promotions"
+    },
+    {
+     "title": "wakra.ezdanmall.qa/promotions",
+     "url": "https://wakra.ezdanmall.qa/promotions"
+    },
+    {
+     "title": "wukair.ezdanmall.qa/promotions",
+     "url": "https://wukair.ezdanmall.qa/promotions"
+    }
+   ]
+  }
+ ],
+ "offers": []
+}
