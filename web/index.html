@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qatar Offers</title>
+<meta name="theme-color" content="#8A1538">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{--maroon:#8A1538;--on:#fff;--ink:#1E1A22;--paper:#F7F5F6;--card:#fff;--line:#E4DFE2;--mute:#6B6370;--soon:#B3261E}
+@media (prefers-color-scheme:dark){:root{--maroon:#E0728F;--on:#17141A;--ink:#F1EDF2;--paper:#17141A;--card:#221E27;--line:#363039;--mute:#A79FAD;--soon:#FF8A80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "Segoe UI",Tahoma,system-ui,sans-serif}
+header{background:var(--maroon);color:var(--on);padding:18px 16px 14px}
+.top{max-width:960px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{margin:0;font-size:1.5rem;letter-spacing:-.01em}
+#lang{background:transparent;color:inherit;border:1.5px solid currentColor;border-radius:99px;padding:4px 14px;font:inherit;cursor:pointer}
+.tabs{max-width:960px;margin:12px auto 0;padding:0 16px;display:flex;gap:8px}
+.tabs button,.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 18px;font:inherit;cursor:pointer}
+[aria-pressed="true"]{background:var(--maroon)!important;border-color:var(--maroon)!important;color:var(--on)!important}
+main{max-width:960px;margin:auto;padding:12px 16px 32px}
+.note{background:var(--card);border:1px dashed var(--maroon);border-radius:8px;padding:8px 12px;margin-bottom:12px;color:var(--mute);font-size:.9rem}
+input{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;margin-bottom:12px}
+:focus-visible{outline:3px solid var(--maroon);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.card{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;text-align:start;padding:0;color:inherit;font:inherit}
+.card:hover{border-color:var(--maroon)}
+.stub{flex:0 0 76px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-inline-end:2px dashed var(--line);padding:8px 4px;text-align:center}
+.stub b{font-size:1.9rem;line-height:1;font-weight:700}
+.stub span{font-size:.72rem;color:var(--mute)}
+.stub.soon b{color:var(--soon)}
+.body{padding:12px 14px;min-width:0}
+.store{font-size:.85rem;color:var(--mute)}
+.title{font-weight:600;margin:2px 0 6px}
+.disc{display:inline-block;background:var(--maroon);color:var(--on);border-radius:6px;padding:1px 9px;font-size:.88rem;font-weight:600}
+.big .body{padding:18px 16px}.big .title{font-size:1.1rem;margin:0}
+.back{background:none;border:0;color:var(--maroon);font:inherit;cursor:pointer;padding:4px 0}
+h2.pt{margin:4px 0 0;font-size:1.35rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.meta{color:var(--mute);font-size:.9rem;margin:6px 0 12px}
+.warn{color:var(--soon)}
+.meta a{color:var(--maroon)}
+details{margin-top:16px;color:var(--mute);font-size:.9rem}
+details a{color:var(--maroon)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);max-width:460px;width:calc(100% - 32px);padding:20px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h2{margin:0 0 6px;font-size:1.2rem}
+dialog p{margin:8px 0}
+dialog a{color:var(--maroon)}
+dialog button{margin-top:8px;padding:8px 18px;border:0;border-radius:8px;background:var(--maroon);color:var(--on);font:inherit;cursor:pointer}
+.empty{padding:36px 0;text-align:center;color:var(--mute)}
+</style>
+</head>
+<body>
+<header><div class="top"><h1 id="appname"></h1><button id="lang" type="button"></button></div></header>
+<nav class="tabs" id="tabs"><button type="button" data-tab="malls"></button><button type="button" data-tab="shops"></button></nav>
+<main><div id="note" class="note" hidden></div><div id="view"></div></main>
+<dialog id="dlg"></dialog>
+<script>
+const CATS=["fashion","food","electronics","beauty","home","grocery"];
+const T={
+ en:{app:"Qatar Offers",malls:"Malls",shops:"Shops",back:"Back",find:"Search shops",
+  cats:{fashion:"Clothing",food:"Food",electronics:"Electronics",beauty:"Beauty",home:"Home",grocery:"Grocery"},
+  searching:"Searching the web for offers. The first search for a mall can take up to 30 seconds.",
+  checked:"Checked",ai:"Found by AI from web sources. Confirm with the store before you go.",
+  limit:"Today's search limit is reached. Showing saved results only.",busy:"Someone else is searching this mall right now. Try again in a minute.",
+  error:"The search failed just now. Showing saved results.",none:"No offers found here yet.",
+  manual:"Offers are collected automatically from official mall pages and the web. Last update:",shopsEmpty:"Shops appear here after a mall has been searched. Open a mall first.",err:"Could not load. Check your connection and try again.",
+  sample:"Demo mode with sample data. Deploy the backend to search real offers.",
+  days:"days left",today:"last day",noEnd:"no end date",close:"Close",ends:"Ends",starts:"Starts",sources:"Sources",source:"Source",offers:n=>n+(n===1?" offer":" offers")},
+ ar:{app:"عروض قطر",malls:"المجمعات",shops:"المتاجر",back:"رجوع",find:"ابحث عن متجر",
+  cats:{fashion:"ملابس",food:"طعام",electronics:"إلكترونيات",beauty:"جمال",home:"منزل",grocery:"بقالة"},
+  searching:"جارٍ البحث عن العروض في الويب. قد يستغرق أول بحث عن مجمع حتى 30 ثانية.",
+  checked:"آخر فحص",ai:"تم العثور عليها بالذكاء الاصطناعي من مصادر الويب. تأكد من المتجر قبل الذهاب.",
+  limit:"تم الوصول إلى حد البحث اليومي. نعرض النتائج المحفوظة فقط.",busy:"هناك بحث جارٍ عن هذا المجمع الآن. حاول بعد دقيقة.",
+  error:"فشل البحث الآن. نعرض النتائج المحفوظة.",none:"لا توجد عروض هنا بعد.",
+  manual:"تُجمع العروض تلقائياً من صفحات المجمعات الرسمية والويب. آخر تحديث:",shopsEmpty:"تظهر المتاجر هنا بعد البحث في مجمع. افتح مجمعاً أولاً.",err:"تعذّر التحميل. تحقق من الاتصال وحاول مرة أخرى.",
+  sample:"وضع تجريبي ببيانات نموذجية. انشر الخادم للبحث عن عروض حقيقية.",
+  days:"أيام متبقية",today:"آخر يوم",noEnd:"بلا تاريخ انتهاء",close:"إغلاق",ends:"ينتهي",starts:"يبدأ",sources:"المصادر",source:"المصدر",offers:n=>n+" عرض"}
+};
+let lang=localStorage.getItem("lang")||"en",route={tab:"malls"},demo=false,sample=[],seq=0,current=[],shopsAll=[];
+const $=id=>document.getElementById(id),dayMs=864e5,today=new Date(new Date().toDateString());
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const daysLeft=o=>o.end_date?Math.round((new Date(o.end_date)-today)/dayMs):null;
+const ttl=o=>lang==="ar"&&o.title_ar?o.title_ar:o.title;
+const nm=m=>lang==="ar"&&m.name_ar?m.name_ar:m.name;
+const fix=o=>o.days_left!=null?{...o,end_date:new Date(today.getTime()+o.days_left*dayMs).toISOString().slice(0,10)}:o;
+
+async function api(p){const r=await fetch(p);if(!r.ok)throw new Error(r.status);return r.json()}
+let mallsStatic=[],meta={};
+const norm=s=>String(s||"").toLowerCase().replace(/centre/g,"center").replace(/[^a-z0-9\u0600-\u06ff]/g,"");
+async function loadSample(){if(!sample.length&&!mallsStatic.length){
+  const[d,m]=await Promise.all([fetch("offers.json").then(r=>r.json()),fetch("malls.json").then(r=>r.json()).catch(()=>[])]);
+  meta=d;sample=(d.offers||[]).map(fix);mallsStatic=m}}
+async function getMalls(){
+  if(!demo){try{return await api("/api/malls")}catch(e){demo=true}}
+  await loadSample();return mallsStatic.length?mallsStatic:[...new Set(sample.map(o=>o.mall_name))].sort().map(n=>({id:n,name:n}));
+}
+async function getMall(id,cat){
+  if(!demo)return api(`/api/mall/${encodeURIComponent(id)}/offers?category=${cat}`);
+  await loadSample();const m=mallsStatic.find(x=>x.id===id)||{id,name:id},st=(meta.status||[]).find(x=>x.id===id)||{};return{mall:m,status:"demo",checked_at:st.checked_at||null,sources:st.sources||[],note:m,offers:sample.filter(o=>norm(o.mall_name)===norm(m.name)&&o.category===cat)};
+}
+async function getShops(){
+  if(!demo)return api("/api/shops");
+  await loadSample();const m={};sample.forEach(o=>m[o.store_name]=(m[o.store_name]||0)+1);
+  return Object.entries(m).sort().map(([name,n])=>({name,n}));
+}
+async function getShop(name){
+  if(!demo)return api("/api/shop?name="+encodeURIComponent(name));
+  await loadSample();return{name,offers:sample.filter(o=>o.store_name===name)};
+}
+
+function stub(o){
+  const d=daysLeft(o),t=T[lang];
+  if(d===null)return`<div class="stub"><span>${t.noEnd}</span></div>`;
+  if(d===0)return`<div class="stub soon"><span>${t.today}</span></div>`;
+  return`<div class="stub ${d<=3?"soon":""}"><b>${d}</b><span>${t.days}</span></div>`;
+}
+function cards(list,showMall){
+  current=list;
+  return`<div class="grid">${list.map((o,i)=>`<button class="card" data-i="${i}">${stub(o)}<div class="body">
+   <div class="store">${esc(o.store_name)}${showMall&&o.mall_name?" · "+esc(o.mall_name):""}</div>
+   <div class="title">${esc(ttl(o))}</div>${o.discount_text?`<span class="disc">${esc(o.discount_text)}</span>`:""}</div></button>`).join("")}</div>`;
+}
+function ago(iso){
+  const m=Math.max(1,Math.round((Date.now()-new Date(iso))/6e4)),rf=new Intl.RelativeTimeFormat(lang,{numeric:"auto"});
+  return m<60?rf.format(-m,"minute"):m<2880?rf.format(-Math.round(m/60),"hour"):rf.format(-Math.round(m/1440),"day");
+}
+const back=()=>`<button class="back" type="button" data-back>${T[lang].back}</button>`;
+const chips=()=>`<div class="chips">${CATS.map(c=>`<button class="chip" type="button" data-cat="${c}" aria-pressed="${c===route.cat}">${T[lang].cats[c]}</button>`).join("")}</div>`;
+
+async function go(){
+  const my=++seq,t=T[lang],v=$("view");
+  document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  $("appname").textContent=t.app;document.title=t.app;$("lang").textContent=lang==="ar"?"English":"العربية";
+  document.querySelectorAll("#tabs button").forEach(b=>{b.textContent=t[b.dataset.tab];b.setAttribute("aria-pressed",b.dataset.tab===route.tab&&!route.mall&&!route.shop||b.dataset.tab===route.tab)});
+  try{
+    if(route.mall){
+      const head=`${back()}<h2 class="pt">${esc(route.name||"")}</h2>${chips()}`;
+      v.innerHTML=head+`<p class="meta">${t.searching}</p>`;
+      const r=await getMall(route.mall,route.cat);if(my!==seq)return;
+      const bits=[];
+      if(r.checked_at)bits.push(`${t.checked} ${ago(r.checked_at)}`);
+      if(r.offers.some(o=>o.origin==="ai_search"))bits.push(t.ai);
+      const msg=t[r.status];
+      v.innerHTML=`${back()}<h2 class="pt">${esc(nm(r.mall))}</h2>${chips()}
+       <p class="meta">${esc(bits.join(" · "))}</p>
+       ${r.note&&(r.note.note||r.note.note_ar)?`<p class="meta">${esc(lang==="ar"&&r.note.note_ar?r.note.note_ar:r.note.note)}${/^https?:\/\//.test(r.note.note_url||"")?` <a href="${esc(r.note.note_url)}" target="_blank" rel="noopener">${t.source}</a>`:""}</p>`:""}${msg&&["limit","busy","error"].includes(r.status)?`<p class="meta warn">${msg}</p>`:""}
+       ${r.offers.length?cards(r.offers,false):`<p class="empty">${t.none}</p>`}
+       ${r.sources&&r.sources.length?`<details><summary>${t.sources}</summary><ul>${r.sources.map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join("")}</ul></details>`:""}`;
+    }else if(route.shop){
+      const r=await getShop(route.shop);if(my!==seq)return;
+      v.innerHTML=`${back()}<h2 class="pt">${esc(r.name)}</h2><p class="meta">${t.offers(r.offers.length)}</p>${cards(r.offers,true)}`;
+    }else if(route.tab==="malls"){
+      const l=await getMalls();if(my!==seq)return;
+      v.innerHTML=`<div class="grid">${l.map(m=>`<button class="card big" data-mall="${esc(m.id)}" data-name="${esc(m.name)}"><div class="body"><div class="title">${esc(nm(m))}</div><div class="store">${esc(m.area||"")}</div></div></button>`).join("")}</div>`;
+    }else{
+      shopsAll=await getShops();if(my!==seq)return;
+      v.innerHTML=`<input id="sq" type="search" placeholder="${t.find}"><div id="shoplist"></div>`;
+      drawShops();
+    }
+  }catch(e){if(my===seq)v.innerHTML=`<p class="empty">${t.err}</p>`}
+  $("note").hidden=!demo;$("note").textContent=t.manual+" "+(meta.updated||"–");
+}
+function drawShops(){
+  const q=($("sq")?.value||"").toLowerCase(),l=shopsAll.filter(s=>s.name.toLowerCase().includes(q));
+  $("shoplist").innerHTML=l.length?`<div class="grid">${l.map(s=>`<button class="card big" data-shop="${esc(s.name)}"><div class="body"><div class="title">${esc(s.name)}</div><div class="store">${T[lang].offers(s.n)}</div></div></button>`).join("")}</div>`
+   :`<p class="empty">${T[lang].shopsEmpty}</p>`;
+}
+document.addEventListener("input",e=>{if(e.target.id==="sq")drawShops()});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.tab){route={tab:b.dataset.tab};go()}
+  else if(b.dataset.mall){route={tab:"malls",mall:b.dataset.mall,name:b.dataset.name,cat:"fashion"};go()}
+  else if(b.dataset.cat){route.cat=b.dataset.cat;go()}
+  else if(b.dataset.shop){route={tab:"shops",shop:b.dataset.shop};go()}
+  else if("back" in b.dataset){route={tab:route.tab};go()}
+  else if(b.dataset.i!==undefined){
+    const o=current[+b.dataset.i],t=T[lang];if(!o)return;
+    $("dlg").innerHTML=`<h2>${esc(ttl(o))}</h2><div class="store">${esc(o.store_name)}${o.mall_name?" · "+esc(o.mall_name):""}</div>
+     ${o.discount_text?`<p><span class="disc">${esc(o.discount_text)}</span></p>`:""}${o.description?`<p>${esc(o.description)}</p>`:""}
+     <p class="store">${o.start_date?t.starts+": "+esc(o.start_date)+"  ":""}${o.end_date?t.ends+": "+esc(o.end_date):""}</p>
+     ${o.source_url&&/^https?:\/\//.test(o.source_url)?`<p><a href="${esc(o.source_url)}" target="_blank" rel="noopener">${t.source}</a></p>`:""}
+     <button type="button" onclick="dlg.close()">${t.close}</button>`;
+    $("dlg").showModal();
+  }
+});
+$("lang").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("lang",lang)}catch(e){}go()});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+go();
+</script>
+</body>
+</html>
