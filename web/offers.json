@@ -1,9 +1,9 @@
 {
- "updated": "2026-10-10 03:49 UTC",
+ "updated": "2026-10-10 11:44 UTC",
  "status": [
   {
    "id": "mall-of-qatar",
-   "checked_at": "2026-10-10 03:49 UTC",
+   "checked_at": "2026-10-10 11:44 UTC",
    "sources": [
     {
      "title": "www.mallofqatar.com.qa/en/events/qatar-mega-sale",
@@ -14,13 +14,11 @@
      "url": "https://mallofqatar.com.qa/en/events/Gear-Up-Win"
     }
    ],
-   "notes": [
-    "no offer-shaped text found on mallofqatar.com.qa/en/events/Gear-Up-Win"
-   ]
+   "notes": []
   },
   {
    "id": "city-center",
-   "checked_at": "2026-10-10 03:49 UTC",
+   "checked_at": "2026-10-10 11:44 UTC",
    "sources": [
     {
      "title": "citycenterdoha.com/brands-for-less/",
@@ -31,7 +29,7 @@
   },
   {
    "id": "ezdan-mall",
-   "checked_at": "2026-10-10 03:49 UTC",
+   "checked_at": "2026-10-10 11:44 UTC",
    "sources": [
     {
      "title": "gharrafa.ezdanmall.qa/promotions",
